@@ -1,6 +1,4 @@
-#Hybrid integral-composite (HIC) broadband kinematic source modeling
-
-HIC user manual
+Hybrid integral-composite (HIC) broadband kinematic source modeling
 ===============
 Hybrid Integral-Composite (HIC) technique for the
 broadband ground motion simulations (Galloviè and Brokešová, 2007). 
