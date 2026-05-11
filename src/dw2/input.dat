@@ -1,0 +1,35 @@
+No. of computed frequencies for low and high frequency approach
+410  4096
+Length of seismograms (in sec)
+409.6
+No. of recievers
+18
+No. of Greens computed along strike (dip), discretization along strike (dip) for interpolation
+16 12  16 12
+glength and gwidth (length and width of Greens grid)
+8000     6000
+Moment of mainshock
+6.37d17
+Strike  Dip   Rake
+358.    76.   24.
+Depth of hypocentre (reference point [0,0,0], formal) 
+88600.
+Length and width of the fault
+8000.     6000.
+Position of hypocentre (reference point [0,0]) on the fault
+6000.     2000.
+No. time points
+16384
+Vp      Vs      Rho   Parameters at source position
+8439.   4768.   3400.
+Vr
+3250
+pmax (No. of implementation of subsource distribution, dw2, KK),  idum
+1       -50
+Stress drop (parameter Koef, acko)
+1.
+Kappa
+0.
+No. of types of frequency filters fc1   fc2 (used in stainfo.dat column 7)
+1
+0.05   10.
