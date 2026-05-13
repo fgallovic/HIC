@@ -10,9 +10,9 @@ real*8 :: rzkomp(NF,NR+3),rekomp(NF,NR+3),rnkomp(NF,NR+3),avgofavgz,avgofavge,av
 real*8 :: avgz,avge,avgn
 character, dimension(4) :: statnamez(NR),statnamee(NR),statnamen(NR)
 
-open(101,file='../../observed/rapseisz.dat')
-open(102,file='../../observed/rapseise.dat')
-open(103,file='../../observed/rapseisn.dat')
+open(101,file='observed/rapseisz.dat')
+open(102,file='observed/rapseise.dat')
+open(103,file='observed/rapseisn.dat')
 open(104,file='rapseisz.dat')
 open(105,file='rapseise.dat')
 open(106,file='rapseisn.dat')

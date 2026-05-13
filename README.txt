@@ -1,7 +1,8 @@
 Hybrid integral-composite (HIC) broadband kinematic source modeling
-===============
-Hybrid Integral-Composite (HIC) technique for the
-broadband ground motion simulations (Galloviè and Brokešová, 2007). 
+===================================================================
+
+Hybrid Integral-Composite (HIC) technique is used for the broadband 
+ground motion simulations (Gallovic and Brokesova, 2007). 
 The method combines low-frequency deterministic and high-frequency 
 stochastic modeling up to frequencies of engineering interest.
 
@@ -10,52 +11,59 @@ Overview
 This manual describes how to use open-source software package HIC.
 The present version of HIC is suitable for UNIX systems, and we test
 and use the software package under Linux. For Windows users, modification 
-of Linux shell scripts needs to be performed. Fortran, Gnuplot and GMT 
-(Generic Mapping Tools) commands should be operating system independent.
-We tested all calculations on Ubuntu 22.04 using Intel Fortran compiler
-ifx (replacing the older ifort).
+of Linux shell scripts needs to be performed. Fortran and Gnuplot  
+commands should be operating system independent. We tested all 
+calculations on Ubuntu 22.04 using Intel Fortran compiler ifx 
+(replacing the older ifort).
    Broadband ground motion simulations performed by HIC modelling codes
 are demonstrated on an example of an Mw5.8, 29.8. 2014, intermediate-depth 
 earthquake in the Hellenic slab. 
    At first we calculate synthetic data for 18 selected seismic stations
-(directory synthetic). Afterwards we prepare observed velocity seismograms 
-from 18 selected real seismic stations for comparison with synthetic data 
-(directory observed). 
+in directory 'src', then synthesize results in directory 'Greece-deep'.
+Afterwards we prepare observed velocity seismograms from 18 selected 
+real seismic stations for comparison with synthetic data (directory 
+'examples/Greece-deep/observed'). Then we use several scripts to plot 
+the results (directory 'Greece-deep').
 
 We shall describe directory structures:
 
-Directory synthetic
-~~~~~~~~~~~~~~~~~~~~~
+Directory 'src'
+~~~~~~~~~~~~~~~
 Directory has the following subdirectory structure:
 
-dw - (discrete wavenumber) directory where we apply the integral approach 
+'dw' - (discrete wavenumber) directory where we apply the integral approach 
      at low frequencies. 
      Calculation is based on modified Axitra code based on discrete wavenumber 
      method providing full-wavefield Green's functions in 1D layered media
-     (Kennett and Kerry, 1979; Bouchon, 1981; Coutant, 1989).
+     (Bouchon, 1981; Cotton and Coutant, 1997).
      The code was originally written by O. Coutant.
-     Additional modifications have been made by J. Zahradník, J. Burjánek 
-     and F. Galloviè.
+     Additional modifications have been made by J. Zahradnik, J. Burjanek 
+     and F. Gallovic.
 
-dw2 - here we use the composite approach at high frequencies. 
+'dw2' - here we use the composite approach at high frequencies. 
       Calculation uses the same Axitra code based on discrete wavenumber 
       method. Some input parameters are different in comparison with
       directory dw.
 
-KK - (KingKong) directory that uses links to executables in KK-src 
-     directory to synthesize results from dw and dw2 directories. 
-     Output files contain displacement, velocity, acceleration waveforms, 
-     Fourier amplitude spectra, peak ground motion values (displacements, 
-     velocities, accelerations), Housner spectral intensity.
-     Directory KK also contains scripts for plotting the final results.
-
-KK-src - directory is used for compilation of source files
+'KK-src' - directory is used for compilation of source files
          for calculation of hybrid combination of integral method 
          and composite method. 
 
-Directory observed
-~~~~~~~~~~~~~~~~~~
-Directory has no subdirectories.
+Directory 'examples'
+~~~~~~~~~~~~~~~~~~~~
+Directory has the following subdirectory structure:
+
+'Greece-deep' - directory that uses links to executables in 'KK-src' 
+     directory to synthesize results from 'dw' and 'dw2' directories. 
+     Output files contain displacement, velocity, acceleration waveforms, 
+     Fourier amplitude spectra, peak ground motion values (displacements, 
+     velocities, accelerations), Housner spectral intensity.
+     Directory 'Greece-deep' also contains scripts for plotting the final 
+     results.
+
+'Greece-deep/observed' - here we prepare observed velocity seismograms 
+     from 18 selected real seismic stations for comparison with synthetic 
+     data.
 
 How to use the code
 *******************
@@ -66,33 +74,33 @@ How to use the code
    for event Mw5.8, 29.8. 2014, intermediate-depth earthquake in 
    the Hellenic slab.
 
-   input.dat (directories 'synthetic', 'observed') 
+   input.dat (directories 'src', 'examples/Greece-deep', 'examples/Greece-deep/observed') 
    ^^^^^^^^^
    File contains parameters specifying the number of computing frequencies, 
    length of calculated seismograms, number of receivers, and source definition; 
    the latter includes the rectangular source geometry (position, length, width, 
-   discretization for Green’s functions), as well as moment, strike, dip, rake, 
+   discretization for Green's functions), as well as moment, strike, dip, rake, 
    rupture velocity. The parameters are read by Fortran executable codes in 
    directories dw, dw2 and KK selectively, i.e., not all parameters are used by
    each executable.
 
-   crustal.dat (directory 'synthetic') 
+   crustal.dat (directory 'src') 
    ^^^^^^^^^^^
    Describes a 1D velocity model. We specify the number of horizontal layers, 
    P and S wave velocities, density, and quality factors Qp, Qs, constant in 
    the layers.
 
-   stations.dat (directory 'synthetic')
+   stations.dat (directory 'src', 'examples/Greece-deep')
    ^^^^^^^^^^^^
    Contains specification of Cartesian coordinates x, y, z and names of receivers.
 
-   frequencies.txt (directories 'synthetic/KK', 'observed')
+   frequencies.txt (directories 'examples/Greece-deep', 'examples/Greece-deep/observed')
    ^^^^^^^^^^^^^^^
    Contains number of frequencies and frequencies of SDF oscillator.
    SDF (Single Degree of Freedom) oscillator represents a simplified model 
    of a structure that vibrates in one dimension. 
 
-   processseis.in (directory 'observed')
+   processseis.in (directory 'examples/Greece-deep/observed')
    ^^^^^^^^^^^^^^
    Summarizes various information about observed seismograms: coordinates 
    of seismic stations, origin time, sampling interval, filename, etc.
@@ -107,7 +115,7 @@ How to use the code
 
 2.1 Synthetic calculations for real stations
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    - directory 'synthetic', subdirectories 'dw', 'dw2', 'KK-src', 'KK'
+    - directory 'src', subdirectories 'dw', 'dw2', 'KK-src'
     
 2.1.1 In the directory 'dw' (integral approach at low frequencies) run at first 
       shell script 'firststep.sh', that compiles all Fortran codes and runs code 
@@ -120,9 +128,9 @@ How to use the code
       that starts parallel loop of processes using 'xargs' with option to set 
       the number of processors used for calculation. For each elementary source 
       the codes 'gr_nez.for' and 'cnv_nez.for' are run automatically. Intermediate 
-      results including Green’s functions for the individual elementary sources 
-      are stored in the 'dat' directory. Finally, the Green’s functions are resorted 
-      by 'resort.f90' into the 'NEZsor.dat' file. Note that the order of the Green’s 
+      results including Green's functions for the individual elementary sources 
+      are stored in the 'dat' directory. Finally, the Green's functions are resorted 
+      by 'resort.f90' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
       of stations and then simply appended one after each other.
@@ -138,23 +146,24 @@ How to use the code
       that starts parallel loop of processes using 'xargs' with option to set 
       the number of processors used for calculation. For each elementary source 
       the codes 'gr_nez.for' and 'cnv_nez.for' are run automatically. Intermediate 
-      results including Green’s functions for the individual elementary sources 
-      are stored in the 'dat' directory. Finally, the Green’s functions are resorted 
-      by 'resort2.f90' into the 'NEZsor.dat' file. Note that the order of the Green’s 
+      results including Green's functions for the individual elementary sources 
+      are stored in the 'dat' directory. Finally, the Green's functions are resorted 
+      by 'resort2.f90' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
       of stations and then simply appended one after each other.
       Calculation time is 1 hour and 12 minutes.
 
-2.1.3 Run script 'firststep3.sh' in directory 'KK'. The script compiles all Fortran
-      codes in directory 'KK-src', creates symbolic links to executable codes in
-      directory 'KK-src' and to final output data files in directories 'dw' and 'dw2', 
-      copies other necessary input files from directory 'dw2'. Afterwards, run script 
-      'calculate3.sh'. The script runs code 'KK' to synthesize final results calculated
-      in 'dw' and 'dw2' directories and runs code 'analyze' to produce final set 
-      of output files: displacement, velocity, acceleration waveforms, Fourier amplitude 
-      spectra, peak ground motion values (displacements, velocities, accelerations), 
-      Housner spectral intensity, spectral velocities and accelerations, Arias intensity.  
+2.1.3 Run script 'firststep3.sh' in directory 'examples/Greece-deep'. The script 
+      compiles all Fortran codes in directory 'KK-src', creates symbolic links 
+      to executable codes in directory 'KK-src' and to final output data files 
+      in directories 'dw' and 'dw2', copies other necessary input files from 
+      directory 'dw2'. Afterwards, run script 'calculate3.sh'. The script runs 
+      code 'KK' to synthesize final results calculated in 'dw' and 'dw2' directories 
+      and runs code 'analyze' to produce final set of output files: displacement, 
+      velocity, acceleration waveforms, Fourier amplitude spectra, peak ground motion 
+      values (displacements, velocities, accelerations), Housner spectral intensity, 
+      spectral velocities and accelerations, Arias intensity.  
       Calculation time is few seconds.
       
       'analyze' output files used in plotting: 
@@ -171,13 +180,13 @@ How to use the code
 
 2.2 Preparation of observed data for comparison with synthetics
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-    - directory 'observed'
+    - directory 'examples/Greece-deep/observed'
 
-    Go to directory 'observed'. In our example we use data (velocity seismograms) 
-    from 18 stations located in the Hellenic subduction area. At first run script 
-    'firststep4.sh' in directory 'observed'. The script is dependent on executable 
+    Go to directory 'examples/Greece-deep/observed'. In our example we use data 
+    (velocity seismograms) from 18 stations located in the Hellenic subduction 
+    area. At first run script 'firststep4.sh'. The script is dependent on executable 
     code 'analyze' and data file stations.JBdist.dat (Joyner-Boore distance from 
-    a fault) that are prepared during point 2.1.3 in directory 'synthetic/KK'.
+    a fault) that are prepared during point 2.1.3 in directory 'examples/Greece-deep'.
     'firststep4.sh' copies data file stations.JBdist.dat to current directory,
     creates symbolic link to code analyze, compiles code 'processseis.f90'.
 
@@ -190,9 +199,9 @@ How to use the code
 
 2.3 Plotting results
     ~~~~~~~~~~~~~~~~
-    - directory 'synthetic/KK'
+    - directory 'examples/Greece-deep'
 
-    Go back to the directory 'synthetic/KK'. Run script 'plotseisall.sh',
+    Go back to the directory 'examples/Greece-deep'. Run script 'plotseisall.sh',
     based on shell and Gnuplot commands, that creates *.ps (PostScript) 
     and *.png (Portable Network Graphics) files with displacement, velocity, 
     acceleration waveforms and appropriate Fourier amplitude spectras for 
@@ -214,22 +223,26 @@ How to use the code
 
 References
 
-Bouchon, M., 1981. A simple method to calculate Green’s functions
-for elastic layered media. Bull. Seism. Soc. Am. 71, 959–971.
- 
-Galloviè, F., Brokešová, J. (2007). Hybrid k-squared Source Model 
-for Strong Ground Motion Simulations: Introduction, Phys. Earth Planet. 
-Interiors, 160, 34-50, doi: 10.1016/j.pepi.2006.09.002.
+Bouchon, M. (1981). A simple method to calculate Green's functions
+for elastic layered media. Bull. Seism. Soc. Am., 71, 959-971.
+doi: 10.1785/BSSA0710040959
 
-Pitarka, A. et al. (2021). Refinements to the Graves–Pitarka kinematic 
+Cotton, F. & Coutant, O. (1997). Dynamic stress variations due to shear 
+faults in a plane-layered medium. Geophys. J. Int., Vol 128, 676-688.
+doi:10.1111/j.1365-246X.1997.tb05328.x
+ 
+Gallovic, F. & Brokesova, J. (2007). Hybrid k-squared Source Model 
+for Strong Ground Motion Simulations: Introduction. Phys. Earth Planet. 
+Interiors, 160, 34-50. doi: 10.1016/j.pepi.2006.09.002.
+
+Pitarka, A. et al. (2021). Refinements to the Graves-Pitarka kinematic 
 rupture generator, including a dynamically consistent slip-rate function, 
-applied to the 2019 Mw 7.1 Ridgecrest. Bull. Seismol. Soc. Am. 112, 287–306. 
+applied to the 2019 Mw 7.1 Ridgecrest. Bull. Seism. Soc. Am., 112, 287-306. 
 https://doi.org/10.1785/0120210138.
 
-Skarlatoudis, A. A., Papazachos, C. B., Margaris, B. N., Ventouzi, C., 
-& Kalogeras, I. (2013). Ground-motion prediction equations of intermediate-depth 
-earthquakes in the Hellenic arc, southern Aegean subduction area. Bulletin of 
-the Seismological Society of America, 103(3), 1952–1968.
+Skarlatoudis, A. A. et al. (2013). Ground-motion prediction equations 
+of intermediate-depth earthquakes in the Hellenic arc, southern Aegean 
+subduction area. Bull. Seism. Soc. Am., 103(3), 1952-1968. 
 https://doi.org/10.1785/0120120265
 
 ------------------------------------------------------------------------
