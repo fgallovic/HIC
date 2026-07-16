@@ -1,12 +1,11 @@
 set -v
 #
-cp -pv ../../../src/dw/input.dat .
+# Copy files to current directory
+cp -pv ../dw/input.dat .
+cp -pv ../analyze.in .
+cp -pv ../frequencies.txt .
+cp -pv ../stations.JBdist.dat .
 #
-# Copy stations.JBdist.dat to current directory
-cp -pv ../../../examples/Greece-deep/stations.JBdist.dat .
-#
-# Make symbolic link between code analyze
-ln -s ../../../src/KK-src/analyze analyze
-#
-# Compile code processseis
-ifx -oprocessseis processseis.f90 filters.for
+# Make symbolic links between codes
+ln -s ../../../src/analyze analyze
+ln -s ../../../src/processseis processseis

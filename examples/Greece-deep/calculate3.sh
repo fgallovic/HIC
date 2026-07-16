@@ -7,5 +7,4 @@ set -v
 # Produce final set of output files
 ./analyze
 #
-
 echo "calculate3.sh done!"
