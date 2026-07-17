@@ -19,17 +19,29 @@ calculations on Ubuntu 22.04 using Intel Fortran compiler ifx
 are demonstrated on an example of an Mw5.8, 29.8. 2014, intermediate-depth 
 earthquake in the Hellenic slab. 
    At first we calculate synthetic data for 18 selected seismic stations
-in directory 'src', then synthesize results in directory 'Greece-deep'.
-Afterwards we prepare observed velocity seismograms from 18 selected 
-real seismic stations for comparison with synthetic data (directory 
-'examples/Greece-deep/observed'). Then we use several scripts to plot 
-the results (directory 'Greece-deep').
+and then we synthesize results (directory 'examples/Greece-deep' and
+subdirectories 'dw' and 'dw2'). Afterwards we prepare observed velocity 
+seismograms from 18 selected real seismic stations for comparison with 
+synthetic data (directory 'examples/Greece-deep/observed'). Then we use 
+several scripts to plot the results (directory 'examples/Greece-deep').
 
 We shall describe directory structures:
 
 Directory 'src'
 ~~~~~~~~~~~~~~~
-Directory has the following subdirectory structure:
+Directory contains source codes for HIC calculations and script
+for the compilation of source codes.
+
+Directory 'examples/Greece-deep'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Directory where we synthesize results from 'dw' and 'dw2' subdirectories. 
+Output files contain displacement, velocity, acceleration waveforms, 
+Fourier amplitude spectra, peak ground motion values (displacements, 
+velocities, accelerations), Housner spectral intensity.
+Directory 'examples/Greece-deep' also contains scripts for plotting the final 
+results combined with observed data.
+
+Directory 'examples/Greece-deep' has following subdirectories:
 
 'dw' - (discrete wavenumber) directory where we apply the integral approach 
      at low frequencies. 
@@ -43,27 +55,10 @@ Directory has the following subdirectory structure:
 'dw2' - here we use the composite approach at high frequencies. 
       Calculation uses the same Axitra code based on discrete wavenumber 
       method. Some input parameters are different in comparison with
-      directory dw.
+      directory 'dw'.
 
-'KK-src' - directory is used for compilation of source files
-         for calculation of hybrid combination of integral method 
-         and composite method. 
-
-Directory 'examples'
-~~~~~~~~~~~~~~~~~~~~
-Directory has the following subdirectory structure:
-
-'Greece-deep' - directory that uses links to executables in 'KK-src' 
-     directory to synthesize results from 'dw' and 'dw2' directories. 
-     Output files contain displacement, velocity, acceleration waveforms, 
-     Fourier amplitude spectra, peak ground motion values (displacements, 
-     velocities, accelerations), Housner spectral intensity.
-     Directory 'Greece-deep' also contains scripts for plotting the final 
-     results.
-
-'Greece-deep/observed' - here we prepare observed velocity seismograms 
-     from 18 selected real seismic stations for comparison with synthetic 
-     data.
+'observed' - here we prepare observed velocity seismograms from 18 selected 
+     real seismic stations for comparison with synthetic data.
 
 How to use the code
 *******************
@@ -74,23 +69,23 @@ How to use the code
    for event Mw5.8, 29.8. 2014, intermediate-depth earthquake in 
    the Hellenic slab.
 
-   input.dat (directories 'src', 'examples/Greece-deep', 'examples/Greece-deep/observed') 
+   input.dat (in directory 'examples/Greece-deep' and subdirectories 'dw', 'dw2', 'observed') 
    ^^^^^^^^^
    File contains parameters specifying the number of computing frequencies, 
    length of calculated seismograms, number of receivers, and source definition; 
    the latter includes the rectangular source geometry (position, length, width, 
    discretization for Green's functions), as well as moment, strike, dip, rake, 
    rupture velocity. The parameters are read by Fortran executable codes in 
-   directories dw, dw2 and KK selectively, i.e., not all parameters are used by
+   different directories selectively, i.e., not all parameters are used by
    each executable.
 
-   crustal.dat (directory 'src') 
+   crustal.dat (in subdirectories 'examples/Greece-deep/dw and dw2') 
    ^^^^^^^^^^^
    Describes a 1D velocity model. We specify the number of horizontal layers, 
    P and S wave velocities, density, and quality factors Qp, Qs, constant in 
    the layers.
 
-   stations.dat (directory 'src', 'examples/Greece-deep')
+   stations.dat (in directory 'examples/Greece-deep' and subdirectories 'dw', 'dw2')
    ^^^^^^^^^^^^
    Contains specification of Cartesian coordinates x, y, z and names of receivers.
 
@@ -107,63 +102,71 @@ How to use the code
 
 2. Perform calculations (step by step)
    ~~~~~~~~~~~~~~~~~~~~
-   Scripts use commands for Intel Fortran ifx (or older ifort) compilers. 
-   In the case you need to apply another Fortran compiler modify specific lines. 
-   Calculations are set to 12 cores in scripts and calculation times correspond 
-   to PC with 12 core processor (AMD Ryzen 9 3900X) and SSD NVMe disc. Memory 
-   requirements are low in our example.
+   Script 'compile.sh' use commands for Intel Fortran ifx compiler. In the case 
+   you need to apply another Fortran compiler modify specific lines. Calculations 
+   are set to 12 cores in scripts and calculation times correspond to PC with 
+   12 core processor (AMD Ryzen 9 3900X) and SSD NVMe disc. Memory requirements 
+   are low in our example.
 
-2.1 Synthetic calculations for real stations
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    - directory 'src', subdirectories 'dw', 'dw2', 'KK-src'
+2.1 Compilation of source codes
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    - directory 'src'
     
-2.1.1 In the directory 'dw' (integral approach at low frequencies) run at first 
-      shell script 'firststep.sh', that compiles all Fortran codes and runs code 
-      'prepare.f90' for preparation of the AXITRA calculations, in particular it 
-      prepares list of elementary sources covering the rupture in regular grid. 
-      'firststep.sh' also deletes subdirectory 'dat' if exists from previous 
-      calculation and makes a new empty subdirectory 'dat'.
+    In the directory 'src' run shell script 'compile.sh', that compiles all 
+    Fortran codes needed for further calculations.
+
+2.2 Synthetic calculations for real stations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    - directory 'examples/Greece-deep', subdirectories 'dw', 'dw2'
+    
+2.2.1 In the directory 'dw' (integral approach at low frequencies) run at first 
+      shell script 'firststep.sh', that creates symbolic links to executable files
+      compiled in directory 'src' and runs code 'prepare' for preparation of 
+      the AXITRA calculations, in particular it prepares list of elementary sources 
+      covering the rupture in regular grid. 'firststep.sh' also deletes subdirectory 
+      'dat' if exists from previous calculation and makes a new empty subdirectory 
+      'dat'.
       
       After successful execution of 'firststep.sh', run shell script 'calculate.sh'
       that starts parallel loop of processes using 'xargs' with option to set 
       the number of processors used for calculation. For each elementary source 
-      the codes 'gr_nez.for' and 'cnv_nez.for' are run automatically. Intermediate 
+      the codes 'gr_nez' and 'cnv_nez' are run automatically. Intermediate 
       results including Green's functions for the individual elementary sources 
       are stored in the 'dat' directory. Finally, the Green's functions are resorted 
-      by 'resort.f90' into the 'NEZsor.dat' file. Note that the order of the Green's 
+      by 'resort' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
       of stations and then simply appended one after each other.
       Calculation time is 5 minutes.
 
-2.1.2 In the directory 'dw2' (composite approach at high frequencies) run, 
-      analogically as in 'dw', at first shell script 'firststep2.sh', that compiles 
-      all Fortran codes and runs code 'prepare2.f90' for preparation of the AXITRA 
-      calculations, in particular it prepares list of elementary sources covering 
-      the rupture in regular grid.
+2.2.2 In the directory 'dw2' (composite approach at high frequencies) run, 
+      analogically as in 'dw', at first shell script 'firststep2.sh', that creates 
+      symbolic links to executable files in directory 'src' and runs code 
+      'prepare2' for preparation of the AXITRA calculations, in particular 
+      it prepares list of elementary sources covering the rupture in regular grid.
 
       After successful execution of 'firststep2.sh', run shell script 'calculate2.sh'
       that starts parallel loop of processes using 'xargs' with option to set 
       the number of processors used for calculation. For each elementary source 
-      the codes 'gr_nez.for' and 'cnv_nez.for' are run automatically. Intermediate 
+      the codes 'gr_nez' and 'cnv_nez' are run automatically. Intermediate 
       results including Green's functions for the individual elementary sources 
       are stored in the 'dat' directory. Finally, the Green's functions are resorted 
-      by 'resort2.f90' into the 'NEZsor.dat' file. Note that the order of the Green's 
+      by 'resort2' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
       of stations and then simply appended one after each other.
       Calculation time is 1 hour and 12 minutes.
 
-2.1.3 Run script 'firststep3.sh' in directory 'examples/Greece-deep'. The script 
-      compiles all Fortran codes in directory 'KK-src', creates symbolic links 
-      to executable codes in directory 'KK-src' and to final output data files 
-      in directories 'dw' and 'dw2', copies other necessary input files from 
-      directory 'dw2'. Afterwards, run script 'calculate3.sh'. The script runs 
-      code 'KK' to synthesize final results calculated in 'dw' and 'dw2' directories 
-      and runs code 'analyze' to produce final set of output files: displacement, 
-      velocity, acceleration waveforms, Fourier amplitude spectra, peak ground motion 
-      values (displacements, velocities, accelerations), Housner spectral intensity, 
-      spectral velocities and accelerations, Arias intensity.  
+2.2.3 Run script 'firststep3.sh' in directory 'examples/Greece-deep'. The script 
+      copies necessary input files from directory 'dw2', creates symbolic links 
+      to executable codes in directory 'src' and to final output data files 
+      in directories 'dw' and 'dw2'. Afterwards, run script 'calculate3.sh'. 
+      The script runs code 'KK' to synthesize final results calculated in 'dw' 
+      and 'dw2' directories and runs code 'analyze' to produce final set of output 
+      files: displacement, velocity, acceleration waveforms, Fourier amplitude 
+      spectra, peak ground motion values (displacements, velocities, accelerations), 
+      Housner spectral intensity, spectral velocities and accelerations, Arias 
+      intensity.  
       Calculation time is few seconds.
       
       'analyze' output files used in plotting: 
@@ -178,26 +181,27 @@ How to use the code
       rpgd.dat, rpgv.dat, rpga.dat ................. peak ground motion values
       rapseisn.dat, rapseise.dat, rapseisz.dat ..... spectral acceleration
 
-2.2 Preparation of observed data for comparison with synthetics
+2.3 Preparation of observed data for comparison with synthetics
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     - directory 'examples/Greece-deep/observed'
 
     Go to directory 'examples/Greece-deep/observed'. In our example we use data 
     (velocity seismograms) from 18 stations located in the Hellenic subduction 
-    area. At first run script 'firststep4.sh'. The script is dependent on executable 
-    code 'analyze' and data file stations.JBdist.dat (Joyner-Boore distance from 
-    a fault) that are prepared during point 2.1.3 in directory 'examples/Greece-deep'.
-    'firststep4.sh' copies data file stations.JBdist.dat to current directory,
-    creates symbolic link to code analyze, compiles code 'processseis.f90'.
+    area. At first run script 'firststep4.sh'. The script copies several necessary 
+    input files from other directories, one of them is file stations.JBdist.dat 
+    (Joyner-Boore distance from a fault) that is prepared during calculations
+    in point 2.2.3 in directory 'examples/Greece-deep'. 'firststep4.sh' also
+    creates symbolic links to codes 'analyze' and 'processseis' located
+    in directory 'src'.
 
     Script 'calculate4.sh' runs codes 'processseis' and 'analyze'. 
     Code 'processseis' converts measured velocity seismograms to HIC format 
-    according to rules specified in data file  'processseis.in'. Execution 
+    according to rules specified in data file 'processseis.in'. Execution 
     of code 'analyze' yields similar output files as for synthetic calculations 
     that are used for next processing and plotting.
     Calculation time is few seconds.
 
-2.3 Plotting results
+2.4 Plotting results
     ~~~~~~~~~~~~~~~~
     - directory 'examples/Greece-deep'
 
