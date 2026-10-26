@@ -1,0 +1,35 @@
+No. of computed frequencies
+102  1300
+Length of seismograms (in sec)
+102.4
+No. of recievers
+42
+No. of Greens computed along strike (dip), discretization along strike (dip)
+20 16  20 16
+glength and gwidth (length and width of Greens grid)
+10000     8000
+Moment of mainshock, Mw=6.0
+1.3d18
+Strike  Dip   Rake
+95.    65.   -90.
+Depth of hypocentre FORMALNI 
+5000.
+Length and width of the fault
+10000.   8000.
+Position of Hypo on the fault
+5000.  4000.
+No. time points
+4096
+Vp      Vs      Rho
+5400.   3086.   2780.
+Vr
+2500
+pmax    idum
+1       -5
+Koef
+1.
+Kappa
+0.
+fc1     fc2
+1
+0.05   10.

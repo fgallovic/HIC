@@ -24,6 +24,10 @@ subdirectories 'dw' and 'dw2'). Afterwards we prepare observed velocity
 seismograms from 18 selected real seismic stations for comparison with 
 synthetic data (directory 'examples/Greece-deep/observed'). Then we use 
 several scripts to plot the results (directory 'examples/Greece-deep').
+   Directory 'examples' contains also data for ground motion simulations 
+of Transform2 Psathopyrgos and Trizonia shallow earthquakes. Instructions 
+are similar to those of Greece-deep. We have no observed data for Psathopyrgos 
+and Trizonia areas so point 2.3 is not realized.
 
 We shall describe directory structures:
 
@@ -136,7 +140,7 @@ How to use the code
       by 'resort' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
-      of stations and then simply appended one after each other.
+      of stations are then simply appended one after each other.
       Calculation time is 5 minutes.
 
 2.2.2 In the directory 'dw2' (composite approach at high frequencies) run, 
@@ -154,7 +158,7 @@ How to use the code
       by 'resort2' into the 'NEZsor.dat' file. Note that the order of the Green's 
       functions is such that the outer loop is over stations. Thus if more crustal 
       models are to be considered, the 'NEZsor.dat' files for the individual subsets 
-      of stations and then simply appended one after each other.
+      of stations are then simply appended one after each other.
       Calculation time is 1 hour and 12 minutes.
 
 2.2.3 Run script 'firststep3.sh' in directory 'examples/Greece-deep'. The script 
